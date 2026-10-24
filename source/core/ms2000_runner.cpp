@@ -449,8 +449,8 @@ bool Ms2kRunner::tickHousekeeping() {
         // Copy LCD content to display buffer
         std::memcpy(m_lcdBuffer[0], l0.c_str(), std::min<size_t>(16, l0.length()));
         std::memcpy(m_lcdBuffer[1], l1.c_str(), std::min<size_t>(16, l1.length()));
-        m_lcdBuffer[0][16] = '\\0';
-        m_lcdBuffer[1][16] = '\\0';
+        m_lcdBuffer[0][16] = '\0';
+        m_lcdBuffer[1][16] = '\0';
         
         // fw28.txt: Sync RealLCD content to GUI buffer for real-time display
         // Clear the GUI buffer and rewrite with current LCD content
@@ -1490,7 +1490,7 @@ void Ms2kRunner::initLcdObserver(const std::vector<std::string>& patterns, uint3
         auto rewindObserverFromVram = [&]{
             // Load the 2×16 display from DDRAM using HD44780 address mapping
             auto loadLine = [&](int row){
-                for (int i = 0; i < 16; i++){
+                for (std::size_t i = 0; i < 16; i++){
                     uint8_t addr = (row == 0) ? (0x00 + i) : (0x40 + i);
                     // Get the character from DDRAM via getText() compatibility method
                     auto line = m_realLcd->getText(row);
