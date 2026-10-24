@@ -124,6 +124,8 @@ bool Ms2kRunner::init() {
         return true;
     }
 
+    g_lcdGui.reset();
+
     // fw21.txt: Install crash handlers first
     InstallCrashHandlers(m_cfg.crashDumpsDir.c_str());
     
@@ -1015,6 +1017,9 @@ void Ms2kRunner::boot_wireMailboxAndSSI() {
                 lcd_trace(false, cmd, LcdPath::GPIO);
 
                 // HD44780 command (RS=0, RW=0)
+                if (m_realLcd) {
+                    m_realLcd->exec(false, false, cmd);
+                }
                 s_lcd.on_cmd(cmd);  // Also update boot probe
 
                 // BUG48: do NOT forward to PanelMP. Its lcdCmd handler calls
@@ -1033,6 +1038,9 @@ void Ms2kRunner::boot_wireMailboxAndSSI() {
                 lcd_trace(true, data, LcdPath::GPIO);
 
                 // HD44780 data (RS=1, RW=0)
+                if (m_realLcd) {
+                    m_realLcd->exec(true, false, data);
+                }
                 s_lcd.on_data(data);  // Also update boot probe
 
                 // BUG48: same as the command path - no double trace through PanelMP.
